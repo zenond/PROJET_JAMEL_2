@@ -1,0 +1,22 @@
+host mipn.fr
+userName stage
+port 3482
+clé publique à userName stage : stage_rsa.pub
+clé privée : stage_rsa
+
+commande ssh
+ssh -p 3482 stage@mipn.fr -i stage_rsa // lien vers clé privée
+password : 
+
+path  /ver/mipn/st/nosFichier.sql
+
+https://mipn.fr/st/
+
+
+
+MySql
+
+Admin Server:
+	boudes@univ-paris13.fr
+
+
