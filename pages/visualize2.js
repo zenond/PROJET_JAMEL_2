@@ -80,14 +80,15 @@ function draw(data, periods , classe) {
 
   
   var totalLength = path.node().getTotalLength();
-
+  console.log(totalLength);
   path.attr("stroke-dasharray", totalLength + " " + totalLength)
-  .attr("stroke-dashoffset", totalLength)
+  .attr("stroke-dashoffset", 0)
+  .attr("opacity" , 0)
   .transition()
   .delay(1000)
-  .duration(20000)
+  .duration(2000)
   .ease(d3.easeLinear)
-  .attr("stroke-dashoffset" , 0);
+  .attr("stroke-dashoffset" , totalLength);
 
   
    
@@ -95,10 +96,18 @@ function draw(data, periods , classe) {
   pathi.attr("stroke-dasharray", totalLength + " " + totalLength)
   .attr("stroke-dashoffset", totalLength)
   .transition()
-  .delay(1000)
-  .duration(20000)
+  .delay(4000)
+  .duration(4000)
   .ease(d3.easeLinear)
-  .attr("stroke-dashoffset" , 0);
+  .attr("stroke-dashoffset" , totalLength*0.5)
+  .transition()
+  .delay(4000)
+  .duration(4000)
+  .ease(d3.easeLinear)
+  .attr("stroke-dashoffset" , 0)
+  ;
+
+  console.log(pathi.node().getPointAtLength(totalLength*0.5));
 
     var  formatValue = d3.format(",.2f");
   var formatCurrency = function(d) { return formatValue(d); };
@@ -241,7 +250,7 @@ function draw(data, periods , classe) {
   path.attr("stroke-dasharray", totalLength + " " + totalLength)
   .attr("stroke-dashoffset", totalLength)
   .transition()
-  .duration(20000)
+  .duration(2000)
   .delay(1000)
   .ease(d3.easeLinear)
   .attr("stroke-dashoffset" , 0); 

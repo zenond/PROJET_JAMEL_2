@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	 body {
+        font: 10px sans-serif;
+        margin: 0;
+        }
+        /*attributs de la line déssinée*/
+        path.line {
+        fill: none;
+        stroke: blue;
+        stroke-width: 1.5px;
+        }
+        path.area {
+        fill: #e7e7e7;
+        }
+        .axis {
+        shape-rendering: crispEdges;
+        }
+        .x.axis line {
+        stroke: #fff;
+        }
+        .x.axis .minor {
+        stroke-opacity: .5;
+        }
+        .x.axis path {
+        display: none;
+        }
+        .y.axis line, .y.axis path {
+        fill: none;
+        stroke: #000;
+        }
+        .guideline {
+        margin-right: 100px;
+        float: right;
+        }
+        .overlay {
+        fill: none;
+        pointer-events: all;
+        }
+        .focus circle {
+        fill: none;
+        stroke: steelblue;
+        }
+       </style>
+	<title>testeur</title>
+	<meta charset="utf-8">
+
+</head>
+<body>
+	<button class="Lancer">lancer</button>
+	<button class="Pause">pause</button>
+	<button class="Resume">resume</button>
+	<div class="hna"></div>
+	
+	<select name="speed" id="speed">
+		<option value="1000"> 1000 </option>
+		<option value="4000"> 4000</option>
+		<option value="9000"> 9000</option>
+	</select>
+	
+	<div class="graphic">	
+	</div>
+
+	
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="http://d3js.org/d3.v4.min.js"></script>
+		<script src="https://d3js.org/d3-timer.v1.min.js"></script>
+
+		<!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+		<script src="graphVisualize.js"></script>
+</body>
+
+</html>

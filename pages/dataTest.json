@@ -1,5 +1,5 @@
-/*{
-  "periods":*/ [
+{
+  "periods": [
      {
       "period" : 205,
       "oneFiWorkersTarget": 9.61835765838623,
@@ -8581,4 +8581,4 @@
       "cash": 0.0
     }
 ]
-/*}*/
+}

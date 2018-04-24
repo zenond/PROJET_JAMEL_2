@@ -4,26 +4,26 @@ var bool = true;
 
 var family1 = {
 	paused :'.onePause', 
-	bout : '.oneOne',
-    classe: "path#aa",
+	bout1 : '.c1',
+	bout2 : '.c2',
+    classe1: "path#aa",
+    classe2: "path#bb",
     boolPause : true,
-    elemePaused : d3.select(".path#aa").append(".path#bb"),
-    boolColor: true
+    boolColor1: true,
+    boolColor2: true
     }
-var family2 = {
+/*var family2 = {
 	paused :'.onePause',
 	bout : '.oneTwo',
     classe: "path#bb",
     boolPause : true,
-    elemePaused : d3.select(".path#aa").append(".path#bb"),
     boolColor: true
-    }
+    }*/
 var family3 = {
 	paused :'.twoPause',
 	bout : '.twoOne',
     classe: "path#cc",
     boolPause : true,
-    elemePaused : d3.select(".path#cc").append(".path#dd"),
     boolColor: true
     }
 var family4 = {
@@ -31,7 +31,6 @@ var family4 = {
 	bout : '.twoTwo',
     classe: "path#dd",
     boolPause : true,
-    elemePaused : d3.select(".path#cc").append(".path#dd"),
     boolColor: true
     }
 var family5 = {
@@ -39,7 +38,6 @@ var family5 = {
 	bout : '.threeOne',
     classe: "path#ee",
     boolPause : true,
-    elemePaused : d3.select(".path#ee").append(".path#ff"),
     boolColor: true
     }
 var family6 = {
@@ -47,7 +45,7 @@ var family6 = {
 	bout : '.threeTwo',
     classe: "path#ff",
     boolPause : true,
-    elemePaused : d3.select(".path#ee").append(".path#ff"),
+
     boolColor: true
     }
 var family7 = {
@@ -55,7 +53,6 @@ var family7 = {
 	bout : '.fourOne',
     classe: "path#gg",
     boolPause : true,
-    elemePaused : d3.select(".path#hh").append(".path#gg"),
     boolColor: true
     }
 var family8 = {
@@ -63,7 +60,6 @@ var family8 = {
 	bout : '.fourTwo',
     classe: "path#hh",
     boolPause : true,
-    elemePaused : d3.select(".path#hh").append(".path#gg"),
     boolColor: true
     }
 
@@ -112,25 +108,46 @@ var family8 = {
 //***************************************filtre***********************
 function filter ( family)
 {
-	$(family.bout).on('click' , function()
+	$(family.bout1).on('click' , function()
 
 	{
 		
-		if(family.boolColor === true)
+		if(family.boolColor1 == true)
 		{
-			var colo= d3.select(family.classe);
+			var colo= d3.select(family.classe1);
 			colo.style("opacity" , 0);
-			family.boolColor= false;
+			family.boolColor1= false;
 		}
-		else if(family.boolColor === false)
+		else if(family.boolColor1 == false)
 		{
-			var colo= d3.select(family.classe);
+			var colo= d3.select(family.classe1);
 			colo.style("opacity" , 1);
-			family.boolColor= true;					
+			family.boolColor1= true;					
 		}
 		// console.log("couleur trois" + colorThree);
 	}
 );
+
+	$(family.bout2).on('click' , function()
+
+	{
+		
+		if(family.boolColor2 == true)
+		{
+			var colo= d3.select(family.classe2);
+			colo.style("opacity" , 0);
+			family.boolColor2= false;
+		}
+		else if(family.boolColor2 == false)
+		{
+			var colo= d3.select(family.classe2);
+			colo.style("opacity" , 1);
+			family.boolColor2= true;					
+		}
+		// console.log("couleur trois" + colorThree);
+	}
+);
+
 }
 
 // function pause ()
@@ -153,12 +170,15 @@ function pauseElement(elementGraph)
 				if (elementGraph.boolPause == true)
 				{
 					console.log("pausing")
-					var c = d3.select("path#aa");
+					var c = d3.select(elementGraph.classe1);
 	    			c.transition()
 	        		.duration( 0 );
-	        		var b = d3.select("path#bb");
+	        		var b = d3.select(elementGraph.classe2);
 	    			b.transition()
 	        		.duration( 0 );
+
+
+	        		//elementGraph.elemePaused.transition().duration(0);
 	        		elementGraph.boolPause = false;
 	        	}
 	        	else
@@ -304,16 +324,18 @@ $(document).ready(function()
 					// );
 					$('.retourner').hide();
 					filter(family1);
-					filter(family2);
+					//filter(family2);
 					filter(family3);
 					filter(family4);
 					filter(family5);
 					filter(family6);
 					filter(family7);
 					filter(family8);
-					pause();
+					//pause();
+
+
 					pauseElement(family1);
-					pauseElement(family2);
+					//pauseElement(family2);
 					pauseElement(family3);
 					pauseElement(family4);
 					pauseElement(family5);
