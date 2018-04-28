@@ -20,6 +20,7 @@ var colorList = ["blue" , "red" , "green" , "black" , "orange" , "orange"];
 var totalLenghts = new Array();
 var xScale;
 var gap;
+var svg;
 class Graphs{
 		constructor(classGraph  , id){
 			this.x = null;
@@ -113,6 +114,7 @@ class Graphs{
   			this._yG = this._svg.append("g")
       		.call(this.yAxis);
 			
+            svg=this._svg;
 		};
 
 		animate(LineNumber, duration , delay , startingPoint){
@@ -249,7 +251,7 @@ class Graphs{
 			  	var  formatValue = d3.format(",.2f");
 			  	var formatCurrency = function(d) { return formatValue(d); };
 			  	var bisectDate = d3.bisector(function(d){return d[(axisAttributes[0][0])];}).left;
-	    		var x0 = xScale.invert(d3.mouse(this)[0]),
+	    		var x0 = (this.x).invert(d3.mouse(this)[0]),
 	        	i = bisectDate(this._data, x0 , 1),
 	        	d0 = this._data[i - 1],
 	        	d1 = this._data[i],
@@ -276,7 +278,7 @@ class Graphs{
 
 $(document).ready(function()
 {
-	$('.myModal').hide();
+	
 	$('.Detail').on('click' , function(){
 		$('.myModal').show();
 	});
@@ -315,7 +317,7 @@ $(document).ready(function()
 				g.start(axisAttributes);
 				g.createFilteringNode(axisAttributes);
 				g.animate(axisAttributes.length, speed , 500 ,0);
-				g.mouseOver(axisAttributes);
+				//g.mouseOver(axisAttributes);
 				
 				p = 4;
 
@@ -339,9 +341,13 @@ $(document).ready(function()
 
 	
 		});
-
+		/*
+			Xscale = this.x
+			origScale = this.x
+			axisG = this._xG
+		*/
 		/*var zoom = d3.zoom().scaleExtent([1 , 10]).on('zoom', zoomed);
-		g._svg.call(zoom);
+		svg.call(zoom);
 
 		function zoomed(){
 			console.log("zoomed fuckkk");
@@ -350,8 +356,11 @@ $(document).ready(function()
 			for (var i= 0; i <labelArray.length; i++) {
 					total = g._paths[i].node().getTotalLength();
 					g._paths.attr('stroke-dasharray', total + ' ' + total)
-              .attr('stroke-dashoffset', total)
-              .attr('stroke-dashoffset', 0);
+              		.attr('stroke-dashoffset', total)
+              		.attr('stroke-dashoffset', 0);
+				g._paths[i].attr('d' , g._valueLine[i]);
+				g._paths[i].attr('clip-path' , 'url(#clip');
+
 			}
 		}*/
 
@@ -387,11 +396,12 @@ $(document).ready(function()
 
 	});
 
-	
 
 
 
-		console.log("end of document");
+
+
+	console.log("end of document");
 
 		
 

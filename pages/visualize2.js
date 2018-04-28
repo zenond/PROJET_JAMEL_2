@@ -1,5 +1,4 @@
 
-alert("pause");
 
 function draw(data, periods , classe) {
               

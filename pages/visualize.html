@@ -108,31 +108,9 @@
                 </div>
                 <!-- /.navbar-static-side -->
             </nav>
-            <!-- *********************************************************************************
-                *********************************************************************************
-                *********************************************************************************
-                ********************************************************************************* -->
-          <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Modal Header</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="FifthGraph"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div> 
-            <!-- *********************************************************************************
-                *********************************************************************************
-                *********************************************************************************
-                ********************************************************************************* -->
+           
+
+
             <div id="page-wrapper">
                 <div class="row">
                     <div class="col-lg-8">
@@ -173,24 +151,22 @@
                                                                 <div class="empl1  col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
-                                                                            Unemployment Line Chart
+                                                                              <!-- a laisser vide car je vais remplir -->                                              
                                                                         </div>
                                                                         <!-- /.panel-heading -->
                                                                         <div class="panel-body ">
                                                                             <div class="FirstGraph">
-                                                                                <!-- <p>hello i am the first fucking graph</p> -->
                                                                             </div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-success">Run</button>
-                                                                            <button type="button" class="onePause btn btn-warning">Pause</button>
-                                                                            <button type="button" class="btn btn-danger ISstopped">Stop</button>
-                                                                            <button type="button" class="emplOne btn btn-warning Details">details</button>
+                                                            
+                                                                            <button type="button" class="btn btn-warning Pause1">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop1">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume1">Resume</button>
+
+                                                                            <button type="button" class="emplOne btn btn-warning Detail1">details</button>
                                                                             <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
-                                                                            <div class="filter">
-                                                                                <label class="c1 checkbox-inline btn-default active"><input type="checkbox" value="" checked="checked">Job Offers</label>
-                                                                                <label class="c2 checkbox-inline btn-default active"><input type="checkbox" value="" checked="checked">nb No Job</label>
-                                                                            </div>
+                                                                           
                                                                         </div>
                                                                         <!-- /.panel-body -->
                                                                     </div>
@@ -200,22 +176,19 @@
                                                                 <div class=" empl2 col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
-                                                                            NbFirms Line Chart
+                                                                              <!-- a laisser vide car je vais remplir -->                                              
                                                                         </div>
                                                                         <!-- /.panel-heading -->
                                                                         <div class="panel-body">
                                                                             <div class="SecondGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="twoPause btn btn-success">Run</button>
-                                                                            <button type="button" class="btn btn-warning">Pause</button>
-                                                                            <button type="button" class="btn btn-danger ISstopped">Stop</button>
-                                                                            <button type="button" class="emplTwo btn btn-warning Details">details</button>
+                                                                            <button type="button" class="btn btn-warning Pause2">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop2">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume2">Resume</button>
+
+                                                                            <button type="button" class="emplOne btn btn-warning Detail2">details</button>
                                                                             <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
-                                                                            <div class="filter">
-                                                                                <label class="twoOne checkbox-inline btn-default active"><input type="checkbox" value="" checked="checked">max Offer Wage</label>
-                                                                                <label class="twoTwo checkbox-inline btn-default active"><input type="checkbox" value="" checked="checked">max Ask Wage</label>
-                                                                            </div>
                                                                         </div>
                                                                         <!-- /.panel-body -->
                                                                     </div>
@@ -326,16 +299,7 @@
                                                     </div>
                                                     <!-- /.col-lg-6 -->
                                                 </div>
-                                                <div class="panel-footer">
-                                                    <button type="button" class="btn btn-success Validated pauseTout">Pause</button>
-                                                    <button type="button" class=" runAfter btn btn-success ">Run</button>
-                                                    <select>
-                                                        <option value="1"> 1000</option>
-                                                        <option value="1"> 4000</option>
-                                                        <option value="1"> 7000</option>
-                                                        <option value="1"> 10000</option>
-                                                    </select>
-                                                </div>
+                                              
                                                 <!--******************************************************************-->
                                             </div>
                                             <div class="ShowBalanceSheet">
@@ -409,20 +373,7 @@
                                                 </div>
                                             </div>
                                             <!--End Balance Sheet-->
-                                            <div class="ShowChoosedAgents">
-                                                <div class="panel panel-default">
-                                                    <div class="panel-heading">
-                                                        You have chosen :
-                                                    </div>
-                                                    <div class="panel-body">
-                                                        <ul>
-                                                            <li>Consumers</li>
-                                                            <li>Firms</li>
-                                                            <li>Governments</li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                             <!--End Balance Sheet-->
                                             <div class ="ShowAgents">
                                                 <div class="panel panel-default">
@@ -431,75 +382,45 @@
                                                             <table class="table table-bordered">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>Choose your economic agents</th>
+                                                                        <th>Parameters of simulation</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr>
                                                                         <td>
-                                                                            <select class="selectpicker" id="Consumers">
-                                                                                <optgroup label="Consumers">
-                                                                                    <option>Consumers</option>
-                                                                                    <option>max Offer Wage</option>
-                                                                                    <option>max Ask Wage</option>
-                                                                                    <option>Min Wage</option>
-                                                                                    <option>
-                                                                                        minWorkersNb  
-                                                                                    </option>
-                                                                                    <option>
-                                                                                        twoFiOfferWage
-                                                                                    </option>
+                                                                            <select class="selectpicker" id="Agents">
+                                                                                <optgroup label="Economic Agent">
+                                                                                    <option class="KeyFigures">Key Figures</option>
+                                                                                    <option class="HouseHolds">HouseHolds</option>
+                                                                                    <option class="Prodution">Production</option>
+                                                                                    <option class="ProfilAndLoss">Profil and Loss</option>
+                                                                                    <option class="LaborMarket">Labor Market</option>
+                                                                                    <option class="CreditAndEquityMarkets">Credit and Equity Market</option>
+                                                                                    <option class="NationalAccounting">National Accounting</option>
                                                                                 </optgroup>
                                                                             </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <p>Choose the economic agent</p>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
-                                                                            <select class="selectpicker" id="Firms">
-                                                                                <optgroup label="Firms">
-                                                                                    <option>Firms</option>
-                                                                                    <option>Job Offers</option>
-                                                                                    <option>nb No Job</option>
-                                                                                    <option>
-                                                                                        Job Deals
-                                                                                    </option>
-                                                                                    <option>
-                                                                                        oneW_budget
-                                                                                    </option>
-                                                                                    <option>
-                                                                                        Cash
-                                                                                    </option>
+                                                                            <select name="speed" id="speedRun">
+                                                                                <optgroup label="Speed">
+                                                                                    <option value="5000">5s</option>
+                                                                                    <option value="10000">10s</option>
+                                                                                    <option value="15000">15s</option>
+                                                                                    <option value="20000">20s</option>
+                                                                                    <option value="25000">25s</option>
                                                                                 </optgroup>
                                                                             </select>
                                                                         </td>
-                                                                    </tr>
-                                                                    <tr>
                                                                         <td>
-                                                                            <select class="selectpicker" id="Governments" label="Governments">
-                                                                                <optgroup label="Governments">
-                                                                                    <option>Governments</option>
-                                                                                    <option>inventoryNormalLvl</option>
-                                                                                    <option>twoFiVacancyRate</option>
-                                                                                    <option>noJobRate</option>
-                                                                                    <option>
-                                                                                        minPrice  
-                                                                                    </option>
-                                                                                </optgroup>
-                                                                            </select>
+                                                                            <p>Choose the speed</p>
                                                                         </td>
                                                                     </tr>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <select class="selectpicker" id="Institutions">
-                                                                                <optgroup label="Institutions">
-                                                                                    <option>Institutions</option>
-                                                                                    <option>dividendIncomeShare</option>
-                                                                                    <option>volumeProduced</option>
-                                                                                    <option>humansCash</option>
-                                                                                </optgroup>
-                                                                            </select>
-                                                                        </td>
-                                                                    </tr>
+                                                                    
                                                                 </tbody>
                                                             </table>
                                                         </div>

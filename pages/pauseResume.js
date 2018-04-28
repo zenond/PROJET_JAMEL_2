@@ -164,7 +164,7 @@ function pauseElement(elementGraph)
 	if ((elementGraph.paused) == ('.onePause'))
 	{
 
-		alert("firs");
+		
 		$(elementGraph.paused).on('click' , function()
 			{
 				if (elementGraph.boolPause == true)
