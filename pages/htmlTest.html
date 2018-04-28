@@ -2,14 +2,13 @@
 <html>
 <head>
 	<style>
-	 body {
+	  body {
         font: 10px sans-serif;
         margin: 0;
         }
         /*attributs de la line déssinée*/
         path.line {
         fill: none;
-        stroke: blue;
         stroke-width: 1.5px;
         }
         path.area {
@@ -41,8 +40,9 @@
         }
         .focus circle {
         fill: none;
-        stroke: steelblue;
+        /*stroke: steelblue;*/
         }
+       
        </style>
 	<title>testeur</title>
 	<meta charset="utf-8">
@@ -52,21 +52,47 @@
 	<button class="Lancer">lancer</button>
 	<button class="Pause">pause</button>
 	<button class="Resume">resume</button>
+	<button class="Detail">Detail</button>
 	<div class="hna"></div>
 	
 	<select name="speed" id="speed">
 		<option value="1000"> 1000 </option>
 		<option value="4000"> 4000</option>
 		<option value="9000"> 9000</option>
+		<option value="17000"> 17000</option>
 	</select>
 	
-	<div class="graphic">	
-	</div>
-
+	<label id="labelTest" class="bb checkbox-inline btn-default active" title="label-tst">real texte checkbox<input type="checkbox" value="true"></label>
 	
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<div class="graphic" id="graphic">	
+	</div>
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+	<div class="modal fade myModal " id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="myM" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="graphic"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+	
+
+
+	<!-- 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="http://d3js.org/d3.v4.min.js"></script>
-		<script src="https://d3js.org/d3-timer.v1.min.js"></script>
+		<script src="https://d3js.org/d3-timer.v1.min.js"></script> -->
+		<script src="documentationjquery.js"></script>
+		<script src="documentationd3.js"></script>
+		<script src="documentationtimer.js"></script>
 
 		<!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
 		<script src="graphVisualize.js"></script>

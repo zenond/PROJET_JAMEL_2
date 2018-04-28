@@ -13,6 +13,7 @@ function draw(data, periods , classe) {
   var parseTime = d3.timeParse("%Y");
   // set the ranges
   var x = d3.scaleTime().range([0, width]);
+  console.log(x);
   var y = d3.scaleLinear().range([height, 0]);
   // define the line
   var valueline = d3.line()
