@@ -6,6 +6,9 @@ var boolModal=true;
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
       width = 450 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
+var graphTotal = new Array();
+//var pos;
+var axisAttributes = new Array();
 var elapsed_time;
 var timePause;
 var timeStart;
@@ -14,19 +17,23 @@ var speed;
 var LineNumb;
 var checkboxArray;
 var labelArray = new Array();
+var pathGlobal = new Array();
 var pathFiltering = new Array();
 var filteringStatus = new Array();
-var colorList = ["blue" , "red" , "green" , "black" , "orange" , "orange"];
+var colorList = ["blue" , "red" , "green" , "black" , "orange" ];
 var totalLenghts = new Array();
 var xScale;
 var gap;
 var svg;
+var positionArray = new Array();
 class Graphs{
-		constructor(classGraph  , id){
+		constructor(titleGraph, classGraph  , id , one , position){
 			this.x = null;
 			this.y= null;
-			//this.valueLine = null;
+			this._titleGraph = titleGraph;
 			this._data = null;
+			this._position = position;
+			this._spaceName = one;
 			this._paths = new Array();
 			this._progress = null;
 			this._duration = null;
@@ -35,7 +42,7 @@ class Graphs{
 			this._valueLine = new Array();
 			this._id=id;
 			this.classGraph = classGraph;
-			this._totalLength=new Array();
+			this._totalLength = new Array();
 			this._timeStart=null;
 			this._xG=null;
 			this._yG=null;
@@ -46,7 +53,7 @@ class Graphs{
 		
 		
 		setAxis(){
-			this.x = d3.scaleTime().range([0 , width]);
+			this.x = d3.scaleLinear().range([0 , width]);
 			this.y = d3.scaleLinear().range([height , 0]);
 			
 		};
@@ -63,42 +70,51 @@ class Graphs{
 
             //********************************
 		};
-		start ( axisAttributes){			
+		start (pos){			
 			//sorting data ascending
-			
-			for (var i = 0; i< axisAttributes.length; i++) {
+			document.getElementById("lFirstGraph").innerHTML=graphTotal[0]._titleGraph;
+			//positionArray.push(this._position);	
+			pathGlobal[pos]= new Array();
+			totalLenghts[pos] = new Array();
+			pathFiltering[pos] = new Array();
+			filteringStatus[pos] = new Array();
+			for (var i = 0; i< axisAttributes[pos].length; i++) {
 			
 				this._data.sort(function(a , b )
 				{
-					return a[(axisAttributes[i][0])]-b[(axisAttributes[i][0])];
+					return a[(axisAttributes[pos][i][0])]-b[(axisAttributes[pos][i][0])];
 				})
 
 				//creating the drawn valueLine
 				
 				 this._valueLine.push((d3.line()
-				 	.x(d => this.x(d[(axisAttributes[i][0])]))
-					.y(d => this.y(d[(axisAttributes[i][1])]))));
+				 	.x(d => this.x(d[(axisAttributes[pos][i][0])]))
+					.y(d => this.y(d[(axisAttributes[pos][i][1])]))));
 
 
 				//Scale the range of data
-				this.x.domain(d3.extent(this._data, function(d) { return d[(axisAttributes[i][0])]; }));
+				this.x.domain([0, 600]);
 				this.y.domain([0, d3.max(this._data, function(d) {
-	    			return Math.max(d[(axisAttributes[i][0])], d[(axisAttributes[i][1])]); })]);
+					return d[(axisAttributes[pos][i][1])]; })]);
 
-				this._originalScale = this.x;
+			
 				//add the valueLine path.
 				this._paths.push(( this._svg.append("path")
 				.data([this._data])
 				.attr("class" , "line")
 				.style("stroke" , colorList[i])
-				.attr("id" , "p"+i)
+				.attr("id" , this._spaceName+"p"+i)
 				.attr("d" , this._valueLine[i])));
 
-				pathFiltering.push(document.getElementById("p"+i));
-				filteringStatus.push(true);
+				pathGlobal[pos].push(this._paths[i]);
+				
+				pathFiltering[pos].push(document.getElementById(this._spaceName+"p"+i));				
+
+				filteringStatus[pos].push(true);
 				
 				this._totalLength.push( this._paths[i].node().getTotalLength());
-				totalLenghts.push(this._totalLength[i]);
+				
+				totalLenghts[pos].push(this._paths[i].node().getTotalLength());
 			}
 
 
@@ -107,37 +123,32 @@ class Graphs{
 			this.xAxis = d3.axisBottom(this.x);
 			this.yAxis = d3.axisLeft(this.y) 
 			//add the X axis
-		  	this._xG = this._svg.append("g")
+		  	this._svg.append("g")
       		.attr("transform", "translate(0," + height + ")")
       		.call(this.xAxis);
  			// Add the Y Axis
-  			this._yG = this._svg.append("g")
+  			this._svg.append("g")
       		.call(this.yAxis);
 			
             svg=this._svg;
 		};
 
-		animate(LineNumber, duration , delay , startingPoint){
+		animate(pos, LineNumber, duration , delay , startingPoint){
 			this._duration=duration;
 			this._delay=delay;
 			timeStart = new Date();
-			//console.log(timeStart);
 				
 			for (var i=0; i < LineNumber; i++) {
 				
 				
-				this._paths[i].attr("stroke-dasharray", this._totalLength[i] + " " + this._totalLength[i])
+				pathGlobal[pos][i].attr("stroke-dasharray", this._totalLength[i] + " " + this._totalLength[i])
 				.attr("stroke-dashoffset", this._totalLength[i])
 				.transition()
 				.delay(this._delay)
 				.duration(this._duration)
 				.ease(d3.easeLinear)
-				.attr("stroke-dashoffset" , startingPoint)
-				/*.transition()
-				.delay(delay)
-				.duration(this._duration)
-				.ease(d3.easeLinear)
-				.attr("stroke-dashoffset" , endingPoint)*/;
+				.attr("stroke-dashoffset" , startingPoint);
+
 			}
 
 		};
@@ -153,38 +164,34 @@ class Graphs{
 				.duration(this._duration)
 				.ease(d3.easeLinear)
 				.attr("stroke-dashoffset" , startingPoint)
-				/*.transition()
-				.delay(delay)
-				.duration(this._duration)
-				.ease(d3.easeLinear)
-				.attr("stroke-dashoffset" , endingPoint)*/;
-				//console.log(this._paths[i].stroke-dasharray);
+			
 			}
 		};
 
-		pauseAll(){
+		pauseGraph(){
 			var c=d3.selectAll("path");
 			c.transition().duration(0);
 			
 		};
 
-		createFilteringNode(axisAttributes){
+		createFilteringNode(pos){
 			checkboxArray = new Array();
 			var myDiv = document.getElementById(this._id);
 			var checkbox;
 			var text; 
-			for (var i =0; i <axisAttributes.length; i++) {
+			labelArray[pos] = new Array();
+			for (var i =0; i <axisAttributes[pos].length; i++) {
 				var label = document.createElement("label");
 				checkbox = document.createElement("input");
 
 
-				text = document.createTextNode(axisAttributes[i][1]);
+				text = document.createTextNode(axisAttributes[this._position][i][1]+"   ");
 
 				checkbox.setAttribute("type", "checkbox");
 				checkbox.setAttribute("value" , true);
 				
 				label.setAttribute("class" , "checkbox-inline btn-default active");
-				label.setAttribute("id" , "l"+i);
+				label.setAttribute("id" , pos+this._spaceName+"l"+i);
 				label.style.color=colorList[i];
 
 				checkboxArray.push(checkbox);
@@ -192,7 +199,7 @@ class Graphs{
 				label.appendChild(text);
 				label.appendChild(checkbox);
 				myDiv.appendChild(label); 
-				labelArray.push(label); 
+				labelArray[pos].push(label); 
 
 				//do this after you append it
 				checkbox.checked = true; 
@@ -203,26 +210,26 @@ class Graphs{
 		};
 
 
-		filter(i){
+		filter(i , j){
 			var color;
-				
-				if ( filteringStatus[i] == true){
-					color = d3.select(pathFiltering[i]);
+			
+				if ( (filteringStatus[i][j]) == true){
+
+					color = d3.select("path#"+pathFiltering[i][j].id);
 					color.style("opacity" , 0);
-					filteringStatus[i] = false;
+					filteringStatus[i][j] = false;
 
 				}
 
 				else {
-					color = d3.select(pathFiltering[i]);
+					color = d3.select("path#"+pathFiltering[i][j].id);
 					color.style("opacity" , 1);
-					filteringStatus[i] = true;
+					filteringStatus[i][j] = true;
 				}
 			
 		};
 
-		mouseOver(axisAttributes){
-			/*for (var k = 0 ; k<axisAttributes.length ; k++) {*/
+		mouseOver(){
 			    var focus = this._svg.append("g")
 			      	.attr("class", "focus")
 			      	.style("display", "none");
@@ -261,10 +268,10 @@ class Graphs{
 	    	//}
 		};	
 		
-		changeColor(){};
+		
 		changePeriod(){};
 		//changeSpeed(){};
-		zoomGraph(){};
+		
 		showDetail(){};
 		
 		timeReset(){
@@ -274,136 +281,229 @@ class Graphs{
 
 };
 
-
-
 $(document).ready(function()
 {
-	
-	$('.Detail').on('click' , function(){
-		$('.myModal').show();
-	});
+	$('.ShowBalanceSheet').hide();
+		$('.ShowGraph').hide();
 	$('.Lancer').on('click' , function(){
 		
-
-		var g = new Graphs(".graphic" , "graphic");
-		var axisAttributes = new Array();
-
-		//To ommit var periodsOfGraph= new Array();
-
-		speed = document.getElementById("speed").value;
+		$('.ShowGraph').show();
+		$('.ShowAgents').hide();
 		
+		$('.ShowBalanceSheet').hide();	
+		
+		
+
+		
+		var choice =document.getElementById("Agents").value;
+		speed = document.getElementById("speed").value;
 
 		d3.json("dataTest.json" , function(error, data){
 			if (error) {
-				//console.log("error while recovering");
+				console.log("error while recovering");
 				return;
 			}
 			else {
-					//To ommit we recover the vertex containing periods.
-				/*data["periods"].forEach(function(d){
-					periodsOfGraph.push( d['period']);
-				});*/
-				//tstCheck();
-				g._data=data["periods"]
-				//axisAttributes.push(new Array('period' , 'oneFiRawsNb'));
-				axisAttributes.push(new Array('period' , 'nbHumans'));
-				axisAttributes.push(new Array('period' , 'oneFi_price'));
-				axisAttributes.push(new Array('period' , 'jobDeals'));
-				//axisAttributes.push(new Array('period' , 'avgPrice'));
+
+				if (choice == "KeyFigures") {
+					graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+
+				}
+					else if (choice == "HouseHolds") {
+											graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+					}
+						else if ("Prodution") {
+												graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+						}
+							else if ("ProfilAndLoss") {
+													graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+							}
+								else if ("LaborMarket") {
+														graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+								}
+									else if ("CreditAndEquityMarkets") {
+															graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+									}
+										else if ("NationalAccounting") {
+																graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+										}
+											
+
+
+					axisAttributes[0] = new Array();
+					axisAttributes[0].push(new Array('period' , 'jobOffers'));
+					axisAttributes[0].push(new Array('period' , 'avgPrice'));
+					axisAttributes[0].push(new Array('period' , 'oneFi_price'));
+
+					axisAttributes[1] = new Array();
+					axisAttributes[1].push(new Array('period' , 'valueRaw'));
+					axisAttributes[1].push(new Array('period' , 'bankCapitalCash'));
+					axisAttributes[1].push(new Array('period' , 'valueStock'));
+
+					axisAttributes[2] = new Array();
+					axisAttributes[2].push(new Array('period' , 'oneFiWorkersTarget'));
+					//axisAttributes[2].push(new Array('period' , 'avgWorkersNB'));
+					//axisAttributes[2].push(new Array('period' , 'twoFiWorkersNB'));
+					axisAttributes[2].push(new Array('period' , 'twoFiWorkersTarget'));
+
+
+					axisAttributes[3] = new Array();
+					axisAttributes[3].push(new Array('period' , 'workersNB'));
+					axisAttributes[3].push(new Array('period' , 'oneFi_price'));
+					axisAttributes[3].push(new Array('period' , 'nbHumans'));
+
+					axisAttributes[4] = new Array();
+					axisAttributes[4].push(new Array('period' , 'bankDividend'));
+					axisAttributes[4].push(new Array('period' , 'bank_sumLoansNormal'));
+					axisAttributes[4].push(new Array('period' , 'oneFiNewLoan'));
+					axisAttributes[4].push(new Array('period' , 'oneW_minWage'));
+
+					axisAttributes[5] = new Array();
+					axisAttributes[5].push(new Array('period' , 'loans'));
+					axisAttributes[5].push(new Array('period' , 'valueStock'));
+					axisAttributes[5].push(new Array('period' , 'valueRaw'));
+
+					axisAttributes[6] = new Array();
+					axisAttributes[6].push(new Array('period' , 'oneW_avgIncome'));
+					axisAttributes[6].push(new Array('period' , 'oneFiOfferWage'));
+					axisAttributes[6].push(new Array('period' , 'firmsDividend'));
+					axisAttributes[6].push(new Array('period' , 'minOfferWage'));
+					axisAttributes[6].push(new Array('period' , 'minWage'));
+
+					axisAttributes[7] = new Array();
+					axisAttributes[7].push(new Array('period' , 'wageIncomeShare'));
+					axisAttributes[7].push(new Array('period' , 'avgVacancyRate'));
+					axisAttributes[7].push(new Array('period' , 'dividendIncomeShare'));
+
+					axisAttributes[8] = new Array();
+					axisAttributes[8].push(new Array('period' , 'inflation'));
+
+				for (var i = 0 ; i < graphTotal.length ; i++) {
+				
+					positionArray.push(i);
+					graphTotal[i]._data=data["periods"];
+					graphTotal[i].setAxis();
+					graphTotal[i].setFrame();
+
+					console.log(positionArray[i]);
+					graphTotal[i].start(positionArray[i]);
+					graphTotal[i].createFilteringNode(positionArray[i]);
+					graphTotal[i].animate(positionArray[i] , axisAttributes[i].length, speed , 500 ,0);
+						//document.getElementById("lFirstGraph").innerHTML=graphTotal[0]._titleGraph;
+				}
+
+			
+				
 
 				
-				g.setAxis();
-				g.setFrame();
-				g.start(axisAttributes);
-				g.createFilteringNode(axisAttributes);
-				g.animate(axisAttributes.length, speed , 500 ,0);
 				//g.mouseOver(axisAttributes);
-				
-				p = 4;
 
-				for (m = 0 ; m<labelArray.length ; m++) 
-				{
-					console.log(m);
-					
-					$("#"+labelArray[m].id).on('click' , function(){
-						
-						//console.log("vous avez cliqué " + p);
-						var str = "" + this.id;						
-						console.log(str);
-						var arr = str.split('');
-						console.log(arr[1]);
-						g.filter(arr[1]);
-					});
-					
-					
+
+			
+				for (var i = 0; i<labelArray.length ; i++) {
+					for (var j = 0; j<labelArray[i].length; j++) {
+						$("#"+labelArray[i][j].id).on('click' , function(){
+							var str = ""+this.id;
+							var arr = str.split('');						
+							graphTotal[arr[0]].filter(arr[0] , arr[5]);
+						});
+					}	
 				}
 			}
 
 	
 		});
-		/*
-			Xscale = this.x
-			origScale = this.x
-			axisG = this._xG
-		*/
-		/*var zoom = d3.zoom().scaleExtent([1 , 10]).on('zoom', zoomed);
-		svg.call(zoom);
-
-		function zoomed(){
-			console.log("zoomed fuckkk");
-			g._originalScale = d3.event.transform.rescaleX(g.x);
-			g._xG.call(g.xAxis.scale(d3.event.transform.rescaleX(g.x)));
-			for (var i= 0; i <labelArray.length; i++) {
-					total = g._paths[i].node().getTotalLength();
-					g._paths.attr('stroke-dasharray', total + ' ' + total)
-              		.attr('stroke-dashoffset', total)
-              		.attr('stroke-dashoffset', 0);
-				g._paths[i].attr('d' , g._valueLine[i]);
-				g._paths[i].attr('clip-path' , 'url(#clip');
-
-			}
-		}*/
-
-		$('.Pause').on('click', function(){
-			
+		
+		$('.pauseAll').on('click', function(){
 			
 			timePause = new Date();
 			gap = new Date();
-			elapsed_time= timePause - timeStart- g._delay;
-			g.timeReset();
-			g.pauseAll();
-			console.log("time start "+timeStart);
-			console.log("time pause "+timePause);
-			console.log("time elapsed "+ elapsed_time);
-			console.log("time percentage "+ timePercentage);
+			elapsed_time= timePause - timeStart- graphTotal[0]._delay;
+			graphTotal[0].timeReset();
+			graphTotal[0].pauseGraph();
+					
 		});
 
 
-		$('.Resume').on('click', function(){
+		$('.resumeAll').on('click', function(){
 
 			speed = document.getElementById("speed").value;
 			var newSpeed = new Array(); 
 			var startingPoint =new Array();
-			for (var i = 0; i < axisAttributes.length; i++) {
-			 	startingPoint.push((g._totalLength[i]*(1-timePercentage)));
-			 	newSpeed.push(startingPoint[i]*speed /totalLenghts[i]);
+			
+			
+			for (var k = 0; k <axisAttributes.length; k++) {
+				startingPoint[k]=new Array();
+				newSpeed[k] = new Array();
+				
+
+				for (var i = 0; i < axisAttributes[k].length; i++) {
+			 		startingPoint[k].push((graphTotal[k]._totalLength[i]*(1-timePercentage)));
+			 		newSpeed[k].push(startingPoint[k][i]*speed /totalLenghts[k][i]);
 			 } 
-			g.resume(axisAttributes.length ,newSpeed[i], g._delay  , 0 ,startingPoint);
+			graphTotal[k].resume(axisAttributes[k].length ,newSpeed[k][i], graphTotal[0]._delay  , 0 ,startingPoint[k]);
+			}
 		});
 
 
 
-
 	});
-
-
-
-
-
-
-	console.log("end of document");
-
-		
 
 });
 
