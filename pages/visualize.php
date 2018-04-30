@@ -45,7 +45,7 @@
         }
         .focus circle {
         fill: none;
-       
+        stroke: steelblue;
         }
        h1 {
                 font: 20;
@@ -148,14 +148,14 @@
                                 </nav>
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-xl-12 ">
+                                        <div class="col-xl-12">
                                             <div class="panel panel-default">
                                                 
                                                     <div class="ShowGraph">
                                                         <!--******************************************************************-->
                                                         <div class="container-fluid">
                                                             <div class="row">
-                                                                <div class="empl0  col-lg-4">
+                                                                <div class="empl1  col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
                                                                               <label id="lFirstGraph"></label>                                             
@@ -167,12 +167,12 @@
                                                                         </div>
                                                                         <div class="panel-footer">
                                                             
-                                                                            <button type="button" class="btn btn-warning Pause1" id="Pause1">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop1" id="Stop1">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume1" id="Resume1">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause1">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop1">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume1">Resume</button>
 
                                                                             <button type="button" class="emplOne btn btn-warning Detail1">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download1" id="download1" height="35" width="35" alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
                                                                            
                                                                         </div>
                                                                         <!-- /.panel-body -->
@@ -180,7 +180,7 @@
                                                                     <!-- /.panel -->
                                                                 </div>
                                                                 <!-- /.col-lg-12 -->
-                                                                <div class=" empl1 col-lg-4">
+                                                                <div class=" empl2 col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
                                                                               <label id="lSecondGraph"></label>                                              
@@ -190,19 +190,19 @@
                                                                             <div class="SecondGraph" id="SecondGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-warning Pause2" id="Pause2">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop2" id="Stop2">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume2 " id="Resume2">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause2">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop2">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume2">Resume</button>
 
                                                                             <button type="button" class="emplOne btn btn-warning Detail2">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download2" id="download2" height="35" width="35" alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
                                                                         </div>
                                                                         <!-- /.panel-body -->
                                                                     </div>
                                                                     <!-- /.panel -->
                                                                 </div>
                                                                 <!-- /.col-lg-6 -->
-                                                                <div class="empl2 col-lg-4">
+                                                                <div class="empl3 col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
                                                                             <label id="lThirdGraph"></label>
@@ -212,12 +212,12 @@
                                                                             <div class="ThirdGraph" id="ThirdGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-warning Pause3" id="Pause3">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop3" id="Stop3">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume3" id="Resume3">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause3">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop3">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume3">Resume</button>
 
                                                                             <button type="button" class="emplOne btn btn-warning Detail3">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download3" id="download3" height="35" width="35"  alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20"  alt="return" />
                                                                             <div class="filter">
                                                                                 
                                                                             </div>
@@ -231,7 +231,7 @@
                                                             </div>
                                                             <div class="row">
                                                                 <!-- /.col-lg-6 -->
-                                                                <div class="empl3 col-lg-4">
+                                                                <div class="empl4 col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
                                                                             <label id="lForthGraph"></label>
@@ -241,11 +241,11 @@
                                                                             <div class="ForthGraph" id="ForthGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-warning Pause4" id="Pause4">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop4" id="Stop4">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume4" id="Resume4">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause4">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop4">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume4">Resume</button>
                                                                             <button type="button" class="emplOne btn btn-warning Detail4">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download4" id="download4" height="35" width="35" alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
                                                                             <div class="filter">
                                                                              
                                                                             </div>
@@ -264,11 +264,11 @@
                                                                             <div class="FifthGraph" id="FifthGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-warning Pause5" id="Pause5">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop5" id="Stop5">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume5" id="Resume5">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause5">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop5">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume5">Resume</button>
                                                                             <button type="button" class="emplOne btn btn-warning Detail5">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download5" id="download5" height="35" width="35" alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
                                                                             <div class="filter">
                                                                              
                                                                             </div>
@@ -277,7 +277,7 @@
                                                                     </div>
                                                                     <!-- /.panel -->
                                                                 </div>
-                                                                <div class="empl5 col-lg-4">
+                                                                <div class="empl4 col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
                                                                             <label id="lSixthGraph"></label>
@@ -287,11 +287,11 @@
                                                                             <div class="SixthGraph" id="SixthGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-warning Pause6" id="Pause6">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop6" id="Stop6">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume6" id="Resume6">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause6">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop6">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume6">Resume</button>
                                                                             <button type="button" class="emplOne btn btn-warning Detail6">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download6" id="download6" height="35" width="35" alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
                                                                             <div class="filter">
                                                                      
                                                                             </div>
@@ -302,7 +302,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="empl6 col-lg-4">
+                                                                <div class="empl4 col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
                                                                             <label id="lSeventhGraph"></label>
@@ -312,11 +312,11 @@
                                                                             <div class="SeventhGraph" id="SeventhGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-warning Pause7 " id="Pause7">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop7" id="Stop7">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume7" id="Resume7">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause7">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop7">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume7">Resume</button>
                                                                             <button type="button" class="emplOne btn btn-warning Detail7">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download7" id="download7" height="35" width="35" alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
                                                                             <div class="filter">
                                                                      
                                                                             </div>
@@ -325,7 +325,7 @@
                                                                     </div>
                                                                     <!-- /.panel -->
                                                                 </div>
-                                                                <div class="empl7 col-lg-4">
+                                                                <div class="empl4 col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
                                                                             <label id="lEighthGraph"></label>
@@ -335,11 +335,11 @@
                                                                             <div class="EighthGraph" id="EighthGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-warning Pause8" id="Pause8">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop8" id="Stop8">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume8" id="Resume8">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause8">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop8">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume8">Resume</button>
                                                                             <button type="button" class="emplOne btn btn-warning Detail8">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download8" id="download8" height="35" width="35" alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
                                                                             <div class="filter">
                                                                      
                                                                             </div>
@@ -348,7 +348,7 @@
                                                                     </div>
                                                                     <!-- /.panel -->
                                                                 </div>
-                                                                <div class="empl8 col-lg-4">
+                                                                <div class="empl4 col-lg-4">
                                                                     <div class="panel panel-default">
                                                                         <div class="panel-heading">
                                                                               <label id="lNinethGraph"></label>
@@ -359,11 +359,11 @@
                                                                             <div class="NinethGraph" id="NinethGraph"></div>
                                                                         </div>
                                                                         <div class="panel-footer">
-                                                                            <button type="button" class="btn btn-warning Pause9" id="Pause9">Pause</button>
-                                                                            <button type="button" class="btn btn-danger Stop9" id="Stop9">Stop</button>
-                                                                            <button type="button" class="btn btn-success Resume9" id="Resume9">Resume</button>
+                                                                            <button type="button" class="btn btn-warning Pause9">Pause</button>
+                                                                            <button type="button" class="btn btn-danger Stop9">Stop</button>
+                                                                            <button type="button" class="btn btn-success Resume9">Resume</button>
                                                                             <button type="button" class="emplOne btn btn-warning Detail9">details</button>
-                                                                            <img src="images/downloadImg.png" class ="download9" id="download9" height="35" width="35" alt="return" />
+                                                                            <img src="images/return.png" class ="retourner" height="20" width="20" alt="return" />
                                                                             <div class="filter">
                                                                      
                                                                             </div>
@@ -376,10 +376,8 @@
                                                                          <div class="panel-footer">
                                                                             <button type="button" class="pauseAll btn btn-danger">Pause</button>
                                                                             <button type="button" class="resumeAll btn btn-success">Resume</button>
-                                                                            <button type="button" class="restartAll btn btn-success">Restart</button>
-                                                                            <!-- <h1 id="perioding">0</h1> -->
-                                                                            <label id="ChoosedGraphs"></label>
-                                                                            <button type="button" class="download" id="download">download</button>
+                                                                            <h1 id="perioding">0</h1>
+
                                                                         </div>
                                                         </div>
                                                     </div>
@@ -473,7 +471,8 @@
                                                                 <tbody>
                                                                     <tr>
                                                                         <td>
-                                                                            <label>Choose your economic agent  </label>  <select class="Agents" id="Agents">
+                                                                            <form action="dataGenerator.php" id="EconomicAgents">
+                                                                            <label>Choose your economic agent  </label>  <select class="Agents" id="Agents" name="AgentName">
                                                                                 <optgroup label="Economic Agent">
                                                                                     <option class="KeyFigures" value="KeyFigures">Key Figures</option>
                                                                                     <option class="HouseHolds" value="HouseHolds">HouseHolds</option>

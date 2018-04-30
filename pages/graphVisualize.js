@@ -1,6 +1,6 @@
 var parseTime = d3.timeParse("%Y");
-var  formatValue = d3.format(",.2f");
-var formatCurrency = function(d) { return formatValue(d); };
+var format = d3.format(",d");
+
 // set the dimensions and margins of the graph
 var boolModal=true;
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -26,6 +26,41 @@ var xScale;
 var gap;
 var svg;
 var positionArray = new Array();
+var focus;
+var timePerGraph = new Array();
+var pausePerGraph = new Array();
+var elapsed_timePerGraph = new Array();
+var datum;
+
+function organize(){
+	$('.AgentEconomic').on('click' , function(){
+			Agent();
+	});
+	$('.Graphs').on('click' , function(){
+			Charts();
+	});
+	$('.balanceSheet').on('click' , function(){
+			Balance();
+	});
+}
+
+function Agent(){
+
+		$('.ShowAgents').show();
+		$('.ShowGraph').hide();
+		$('.ShowBalanceSheet').hide();
+}
+function Charts(){
+		$('.ShowAgents').hide();
+		$('.ShowGraph').show();
+		$('.ShowBalanceSheet').hide();
+}
+function Balance(){
+		$('.ShowAgents').hide();
+		$('.ShowGraph').hide();
+		$('.ShowBalanceSheet').show();
+}
+
 class Graphs{
 		constructor(titleGraph, classGraph  , id , one , position){
 			this.x = null;
@@ -72,12 +107,13 @@ class Graphs{
 		};
 		start (pos){			
 			//sorting data ascending
-			document.getElementById("lFirstGraph").innerHTML=graphTotal[0]._titleGraph;
+			
 			//positionArray.push(this._position);	
 			pathGlobal[pos]= new Array();
 			totalLenghts[pos] = new Array();
 			pathFiltering[pos] = new Array();
 			filteringStatus[pos] = new Array();
+			datum=this._data;
 			for (var i = 0; i< axisAttributes[pos].length; i++) {
 			
 				this._data.sort(function(a , b )
@@ -93,7 +129,7 @@ class Graphs{
 
 
 				//Scale the range of data
-				this.x.domain([0, 600]);
+				xScale = this.x.domain([0, 600]);
 				this.y.domain([0, d3.max(this._data, function(d) {
 					return d[(axisAttributes[pos][i][1])]; })]);
 
@@ -131,13 +167,60 @@ class Graphs{
       		.call(this.yAxis);
 			
             svg=this._svg;
+
+
+            
+            
+				    var  formatValue = d3.format(",.2f");
+				  	var formatCurrency = function(d) { return formatValue(d); };
+				  	var bisectDate = d3.bisector(function(d){return d[(axisAttributes[pos][0][0])];}).left;
+				    var focus = svg.append("g")
+				      .attr("class", "focus")
+				      .style("display", "none");
+
+				  	focus.append("circle")
+				      .attr("r", 4.5);
+
+				  	focus.append("text")
+				      .attr("x", 9)
+				      .attr("dy", ".35em")
+				      .attr("stroke" , colorList[i]);
+
+
+
+				  	svg.append("rect")
+				      .attr("class", "overlay")
+				      .attr("width", width)
+				      .attr("height", height)
+				      .on("mouseover", function() { focus.style("display", null); })
+				      .on("mouseout", function() { focus.style("display", "none"); })
+				      .on("mousemove", mousemove);
+
+				  	function mousemove() {
+				   	 var x0 = (xScale).invert(d3.mouse(this)[0]),
+				   	     i = bisectDate(datum, x0, 1),
+				        d0 = datum[i - 1],
+				   
+				        d1 = datum[i];
+				        var d = x0 - d0[(axisAttributes[pos][0][0])] > d1[(axisAttributes[pos][0][0])] - x0 ? d1 : d0;
+
+				    focus.attr("transform", "translate(" + d[(axisAttributes[pos][0][0])] + "," + d[(axisAttributes[pos][0][1])] + ")");
+				    focus.select("text").text(formatCurrency(d[(axisAttributes[pos][0][1])]));
+
+				  	
+					}
+
+            
+			this._svg.attr("id" , "sv");
+
 		};
 
 		animate(pos, LineNumber, duration , delay , startingPoint){
 			this._duration=duration;
 			this._delay=delay;
 			timeStart = new Date();
-				
+			timePerGraph.push(new Date());
+
 			for (var i=0; i < LineNumber; i++) {
 				
 				
@@ -215,7 +298,7 @@ class Graphs{
 			
 				if ( (filteringStatus[i][j]) == true){
 
-					color = d3.select("path#"+pathFiltering[i][j].id);
+					color = d3.select("path#"+pathFiltering[i][j].id);	
 					color.style("opacity" , 0);
 					filteringStatus[i][j] = false;
 
@@ -228,58 +311,75 @@ class Graphs{
 				}
 			
 		};
-
-		mouseOver(){
-			    var focus = this._svg.append("g")
-			      	.attr("class", "focus")
-			      	.style("display", "none");
-
-			  	focus.append("circle")
-			      	.attr("r", 4.5);
-
-			  	focus.append("text")
-			      	.attr("x", 9)
-			      	.attr("dy", ".35em");
-
-			  	this._svg.append("rect")
-			    	.attr("class", "overlay")
-			      	.attr("width", width)
-			      	.attr("height", height)
-			      	.on("mouseover", function() { focus.style("display", null); })
-			      	.on("mouseout", function() { focus.style("display", "none"); })
-			      	.on("mousemove", this.mousemove(focus , axisAttributes));
-
-			//}
-		};
-	  	mousemove(focus , axisAttributes) {
-	    	
-	    	//for (var s = 0; s< axisAttributes.length; s++) {
-	    		
-			  	var  formatValue = d3.format(",.2f");
-			  	var formatCurrency = function(d) { return formatValue(d); };
-			  	var bisectDate = d3.bisector(function(d){return d[(axisAttributes[0][0])];}).left;
-	    		var x0 = (this.x).invert(d3.mouse(this)[0]),
-	        	i = bisectDate(this._data, x0 , 1),
-	        	d0 = this._data[i - 1],
-	        	d1 = this._data[i],
-	        	d = d0;
-	    		focus.attr("transform", "translate(" + this.x(d[(axisAttributes[0][0])]) + "," + this.y(d[(axisAttributes[0][1])]) + ")");
-	   			focus.select("text").text(formatCurrency(d[(axisAttributes[0][1])]));
-	    	//}
-		};	
 		
 		
-		changePeriod(){};
-		//changeSpeed(){};
-		
-		showDetail(){};
 		
 		timeReset(){
 			timePercentage= elapsed_time/this._duration;		
 		};
 
+		pauseElement(){
+
+		};
+
 
 };
+
+function resumeElement(indice){
+	var startingPintPerGraph = new Array();	
+	for (var t = 0 ; t< totalLenghts[indice].length ; t++) {
+		startingPintPerGraph.push(totalLenghts[indice][t] *(1 - (elapsed_timePerGraph[indice] / graphTotal[indice]._duration)) );
+	}
+
+			
+		
+	for (var i=0; i < totalLenghts[indice].length; i++) {
+		graphTotal[indice]._paths[i].attr("stroke-dasharray", graphTotal[indice]._totalLength[i] + " " + graphTotal[indice]._totalLength[i])
+		.attr("stroke-dashoffset", startingPintPerGraph[i])
+		.transition()
+		.delay(graphTotal[indice]._delay)
+		.duration(graphTotal[indice]._duration)
+		.ease(d3.easeLinear)
+		.attr("stroke-dashoffset" , 0);
+	
+	}		
+}
+
+function pauseElement(indice){
+	pausePerGraph[indice]=new Date()
+	elapsed_timePerGraph[indice] = pausePerGraph[indice] - timePerGraph[indice] - graphTotal[0]._delay;
+	for (var k = 0 ; k<pathFiltering[indice].length ; k++) {
+		c=d3.select("path#"+pathFiltering[indice][k].id );
+		c.transition().duration(0);
+	}
+}
+
+/*function animate( endingPoint, speed)
+{
+d3.select("#perioding")
+  .transition()
+    .duration(speed)
+    .on("start", function repeat() {
+      d3.active(this)
+          .tween("text", function() {
+            var that = d3.select(this),
+                i = d3.interpolateNumber(that.text().replace(/,/g, ""), endingPoint);
+            return function(t) { that.text(format(i(t))); };
+          })
+        .transition();
+    });
+}*/
+function download(indice){
+		var svgData = $("svg")[indice].outerHTML;
+		var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+		var svgUrl = URL.createObjectURL(svgBlob);
+		var downloadLink = document.createElement("a");
+		downloadLink.href = svgUrl;
+		downloadLink.download = graphTotal[indice]._titleGraph+".svg";
+		document.body.appendChild(downloadLink);
+		downloadLink.click();
+		document.body.removeChild(downloadLink);
+}
 
 $(document).ready(function()
 {
@@ -292,13 +392,19 @@ $(document).ready(function()
 		
 		$('.ShowBalanceSheet').hide();	
 		
-		
+		$('.restartAll').hide();
+
 
 		
 		var choice =document.getElementById("Agents").value;
 		speed = document.getElementById("speed").value;
 
+
+		//var donnee = JSON.parse("dataGenerator.php");
+		//d3.json(donnee , function(error , data))
+
 		d3.json("dataTest.json" , function(error, data){
+			
 			if (error) {
 				console.log("error while recovering");
 				return;
@@ -316,74 +422,9 @@ $(document).ready(function()
 					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
 					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
 
-				}
-					else if (choice == "HouseHolds") {
-											graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
-					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
-					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
-					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
-					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
-					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
-					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
-					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
-					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
-					}
-						else if ("Prodution") {
-												graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
-					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
-					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
-					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
-					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
-					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
-					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
-					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
-					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
-						}
-							else if ("ProfilAndLoss") {
-													graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
-					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
-					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
-					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
-					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
-					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
-					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
-					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
-					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
-							}
-								else if ("LaborMarket") {
-														graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
-					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
-					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
-					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
-					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
-					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
-					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
-					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
-					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
-								}
-									else if ("CreditAndEquityMarkets") {
-															graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
-					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
-					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
-					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
-					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
-					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
-					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
-					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
-					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
-									}
-										else if ("NationalAccounting") {
-																graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
-					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
-					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
-					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
-					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
-					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
-					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
-					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
-					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
-										}
-											
+
+
+
 
 
 					axisAttributes[0] = new Array();
@@ -434,6 +475,250 @@ $(document).ready(function()
 					axisAttributes[8] = new Array();
 					axisAttributes[8].push(new Array('period' , 'inflation'));
 
+
+				}
+					else if (choice == "HouseHolds") {
+											graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+					
+
+
+
+
+					axisAttributes[0] = new Array();
+					axisAttributes[0].push(new Array('period' , 'workersNB'));
+					axisAttributes[0].push(new Array('period' , 'oneFi_price'));
+					axisAttributes[0].push(new Array('period' , 'nbHumans'));
+
+					axisAttributes[1] = new Array();
+					axisAttributes[1].push(new Array('period' , 'bankDividend'));
+					axisAttributes[1].push(new Array('period' , 'bank_sumLoansNormal'));
+					axisAttributes[1].push(new Array('period' , 'oneFiNewLoan'));
+					axisAttributes[1].push(new Array('period' , 'oneW_minWage'));
+
+					axisAttributes[2] = new Array();
+					axisAttributes[2].push(new Array('period' , 'loans'));
+					axisAttributes[2].push(new Array('period' , 'valueStock'));
+					axisAttributes[2].push(new Array('period' , 'valueRaw'));
+
+					axisAttributes[3] = new Array();
+					axisAttributes[3].push(new Array('period' , 'jobOffers'));
+					axisAttributes[3].push(new Array('period' , 'avgPrice'));
+					axisAttributes[3].push(new Array('period' , 'oneFi_price'));
+
+					axisAttributes[4] = new Array();
+					axisAttributes[4].push(new Array('period' , 'valueRaw'));
+					axisAttributes[4].push(new Array('period' , 'bankCapitalCash'));
+					axisAttributes[4].push(new Array('period' , 'valueStock'));
+
+					axisAttributes[5] = new Array();
+					axisAttributes[5].push(new Array('period' , 'oneFiWorkersTarget'));
+					//axisAttributes[2].push(new Array('period' , 'avgWorkersNB'));
+					//axisAttributes[2].push(new Array('period' , 'twoFiWorkersNB'));
+					axisAttributes[5].push(new Array('period' , 'twoFiWorkersTarget'));
+
+					axisAttributes[6] = new Array();
+					axisAttributes[6].push(new Array('period' , 'oneW_avgIncome'));
+					axisAttributes[6].push(new Array('period' , 'oneFiOfferWage'));
+					axisAttributes[6].push(new Array('period' , 'firmsDividend'));
+					axisAttributes[6].push(new Array('period' , 'minOfferWage'));
+					axisAttributes[6].push(new Array('period' , 'minWage'));
+
+					axisAttributes[7] = new Array();
+					axisAttributes[7].push(new Array('period' , 'wageIncomeShare'));
+					axisAttributes[7].push(new Array('period' , 'avgVacancyRate'));
+					axisAttributes[7].push(new Array('period' , 'dividendIncomeShare'));
+
+					axisAttributes[8] = new Array();
+					axisAttributes[8].push(new Array('period' , 'inflation'));
+
+					}
+						else if ("Prodution") {
+					graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+					
+
+
+					axisAttributes[0] = new Array();
+					axisAttributes[0].push(new Array('period' , 'oneW_avgIncome'));
+					axisAttributes[0].push(new Array('period' , 'oneFiOfferWage'));
+					axisAttributes[0].push(new Array('period' , 'firmsDividend'));
+					axisAttributes[0].push(new Array('period' , 'minOfferWage'));
+					axisAttributes[0].push(new Array('period' , 'minWage'));
+
+					axisAttributes[1] = new Array();
+					axisAttributes[1].push(new Array('period' , 'wageIncomeShare'));
+					axisAttributes[1].push(new Array('period' , 'avgVacancyRate'));
+					axisAttributes[1].push(new Array('period' , 'dividendIncomeShare'));
+
+					axisAttributes[2] = new Array();
+					axisAttributes[2].push(new Array('period' , 'inflation'));
+
+					axisAttributes[6] = new Array();
+					axisAttributes[6].push(new Array('period' , 'jobOffers'));
+					axisAttributes[6].push(new Array('period' , 'avgPrice'));
+					axisAttributes[6].push(new Array('period' , 'oneFi_price'));
+
+					axisAttributes[7] = new Array();
+					axisAttributes[7].push(new Array('period' , 'valueRaw'));
+					axisAttributes[7].push(new Array('period' , 'bankCapitalCash'));
+					axisAttributes[7].push(new Array('period' , 'valueStock'));
+
+					axisAttributes[8] = new Array();
+					axisAttributes[8].push(new Array('period' , 'oneFiWorkersTarget'));
+					//axisAttributes[2].push(new Array('period' , 'avgWorkersNB'));
+					//axisAttributes[2].push(new Array('period' , 'twoFiWorkersNB'));
+					axisAttributes[8].push(new Array('period' , 'twoFiWorkersTarget'));
+
+
+					axisAttributes[3] = new Array();
+					axisAttributes[3].push(new Array('period' , 'workersNB'));
+					axisAttributes[3].push(new Array('period' , 'oneFi_price'));
+					axisAttributes[3].push(new Array('period' , 'nbHumans'));
+
+					axisAttributes[4] = new Array();
+					axisAttributes[4].push(new Array('period' , 'bankDividend'));
+					axisAttributes[4].push(new Array('period' , 'bank_sumLoansNormal'));
+					axisAttributes[4].push(new Array('period' , 'oneFiNewLoan'));
+					axisAttributes[4].push(new Array('period' , 'oneW_minWage'));
+
+					axisAttributes[5] = new Array();
+					axisAttributes[5].push(new Array('period' , 'loans'));
+					axisAttributes[5].push(new Array('period' , 'valueStock'));
+					axisAttributes[5].push(new Array('period' , 'valueRaw'));
+
+
+						}
+							else if ("ProfilAndLoss") {
+					graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+							
+
+
+
+
+					axisAttributes[6] = new Array();
+					axisAttributes[6].push(new Array('period' , 'jobOffers'));
+					axisAttributes[6].push(new Array('period' , 'avgPrice'));
+					axisAttributes[6].push(new Array('period' , 'oneFi_price'));
+
+					axisAttributes[4] = new Array();
+					axisAttributes[4].push(new Array('period' , 'valueRaw'));
+					axisAttributes[4].push(new Array('period' , 'bankCapitalCash'));
+					axisAttributes[4].push(new Array('period' , 'valueStock'));
+
+					axisAttributes[2] = new Array();
+					axisAttributes[2].push(new Array('period' , 'oneFiWorkersTarget'));
+					//axisAttributes[2].push(new Array('period' , 'avgWorkersNB'));
+					//axisAttributes[2].push(new Array('period' , 'twoFiWorkersNB'));
+					axisAttributes[2].push(new Array('period' , 'twoFiWorkersTarget'));
+
+
+					axisAttributes[3] = new Array();
+					axisAttributes[3].push(new Array('period' , 'workersNB'));
+					axisAttributes[3].push(new Array('period' , 'oneFi_price'));
+					axisAttributes[3].push(new Array('period' , 'nbHumans'));
+
+					axisAttributes[1] = new Array();
+					axisAttributes[1].push(new Array('period' , 'bankDividend'));
+					axisAttributes[1].push(new Array('period' , 'bank_sumLoansNormal'));
+					axisAttributes[1].push(new Array('period' , 'oneFiNewLoan'));
+					axisAttributes[1].push(new Array('period' , 'oneW_minWage'));
+
+					axisAttributes[5] = new Array();
+					axisAttributes[5].push(new Array('period' , 'loans'));
+					axisAttributes[5].push(new Array('period' , 'valueStock'));
+					axisAttributes[5].push(new Array('period' , 'valueRaw'));
+
+					axisAttributes[0] = new Array();
+					axisAttributes[0].push(new Array('period' , 'oneW_avgIncome'));
+					axisAttributes[0].push(new Array('period' , 'oneFiOfferWage'));
+					axisAttributes[0].push(new Array('period' , 'firmsDividend'));
+					axisAttributes[0].push(new Array('period' , 'minOfferWage'));
+					axisAttributes[0].push(new Array('period' , 'minWage'));
+
+					axisAttributes[7] = new Array();
+					axisAttributes[7].push(new Array('period' , 'wageIncomeShare'));
+					axisAttributes[7].push(new Array('period' , 'avgVacancyRate'));
+					axisAttributes[7].push(new Array('period' , 'dividendIncomeShare'));
+
+					axisAttributes[8] = new Array();
+					axisAttributes[8].push(new Array('period' , 'inflation'));
+
+							}
+								else if ("LaborMarket") {
+														graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+								}
+									else if ("CreditAndEquityMarkets") {
+															graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+									}
+										else if ("NationalAccounting") {
+																graphTotal.push(new Graphs("GDP indices" ,".FirstGraph" , "FirstGraph", "one" , 0));
+					graphTotal.push(new Graphs("Real Consumption" , ".SecondGraph" , "SecondGraph" , "two" , 1));
+					graphTotal.push(new Graphs("Net national income" , ".ThirdGraph" , "ThirdGraph" , "thr" , 2));
+					graphTotal.push(new Graphs("Money holdings" , ".ForthGraph" , "ForthGraph" , "fou" , 3));
+					graphTotal.push(new Graphs("Total Production and Sales" , ".FifthGraph" , "FifthGraph" , "fiv" , 4));
+					graphTotal.push(new Graphs("Price Levels" , ".SixthGraph" , "SixthGraph" , "six" , 5));
+					graphTotal.push(new Graphs("Employment" , ".SeventhGraph" , "SeventhGraph" , "sev" , 6));
+					graphTotal.push(new Graphs("Interest rates(asked)" , ".EighthGraph" , "EighthGraph" , "eig" , 7));
+					graphTotal.push(new Graphs("Firms:Net Profit/revenue" , ".NinethGraph" , "NinethGraph" , "nin" , 8));
+										}
+											
+
+
+				document.getElementById("lFirstGraph").innerHTML=graphTotal[0]._titleGraph;
+				document.getElementById("lSecondGraph").innerHTML=graphTotal[1]._titleGraph;
+				document.getElementById("lThirdGraph").innerHTML=graphTotal[2]._titleGraph;
+				document.getElementById("lForthGraph").innerHTML=graphTotal[3]._titleGraph;
+				document.getElementById("lFifthGraph").innerHTML=graphTotal[4]._titleGraph;
+				document.getElementById("lSixthGraph").innerHTML=graphTotal[5]._titleGraph;
+				document.getElementById("lSeventhGraph").innerHTML=graphTotal[6]._titleGraph;
+				document.getElementById("lEighthGraph").innerHTML=graphTotal[7]._titleGraph;
+				document.getElementById("lNinethGraph").innerHTML=graphTotal[8]._titleGraph;
+
+
+				for (var t=0 ; t<graphTotal.length ; t++) {
+					document.getElementById("ChoosedGraphs").innerHTML+=graphTotal[t]._titleGraph+"<br/>";
+				}
+
+					
 				for (var i = 0 ; i < graphTotal.length ; i++) {
 				
 					positionArray.push(i);
@@ -441,33 +726,69 @@ $(document).ready(function()
 					graphTotal[i].setAxis();
 					graphTotal[i].setFrame();
 
-					console.log(positionArray[i]);
 					graphTotal[i].start(positionArray[i]);
 					graphTotal[i].createFilteringNode(positionArray[i]);
 					graphTotal[i].animate(positionArray[i] , axisAttributes[i].length, speed , 500 ,0);
-						//document.getElementById("lFirstGraph").innerHTML=graphTotal[0]._titleGraph;
+				
 				}
-
-			
-				
-
-				
-				//g.mouseOver(axisAttributes);
-
+			/*	animate(600 , speed);*/
 
 			
 				for (var i = 0; i<labelArray.length ; i++) {
 					for (var j = 0; j<labelArray[i].length; j++) {
 						$("#"+labelArray[i][j].id).on('click' , function(){
 							var str = ""+this.id;
-							var arr = str.split('');						
+							var arr = str.split('');				
 							graphTotal[arr[0]].filter(arr[0] , arr[5]);
 						});
 					}	
 				}
+				
+				for (var t = 1; t< (graphTotal.length)+1; t++) {
+							
+					$('.Pause'+t).on('click' , function(){
+						var clicked = ""+this.id;
+						var c = clicked.split('');
+						pauseElement((c[5])-1);
+					});		
+				}
+
+				for (var t = 1; t< (graphTotal.length)+1; t++) {
+							
+					$('.Resume'+t).on('click' , function(){
+						var clicked = ""+this.id;
+						var c = clicked.split('');
+						
+						resumeElement((c[6])-1);
+					});		
+				}
+
+				for (var t = 1; t< (graphTotal.length)+1; t++) {
+							
+					$('.Stop'+t).on('click' , function(){
+						var clicked = ""+this.id;
+						var c = clicked.split('');
+						alert("Stop graph  "+graphTotal[c[4]-1]._titleGraph);
+						$('.empl'+(c[4]-1)).hide();
+					});		
+				}
+				for (var t = 1; t< (graphTotal.length)+1; t++) {
+							
+					$('.download'+t).on('click' , function(){
+						var clicked = ""+this.id;
+						var c = clicked.split('');
+						download(c[8]-1);
+						
+						
+					});		
+				}
+
+
+		
+			//else
 			}
 
-	
+	//D3.json
 		});
 		
 		$('.pauseAll').on('click', function(){
@@ -478,11 +799,12 @@ $(document).ready(function()
 			graphTotal[0].timeReset();
 			graphTotal[0].pauseGraph();
 					
+			$('.restartAll').show();
 		});
 
 
 		$('.resumeAll').on('click', function(){
-
+			$('.restartAll').hide();
 			speed = document.getElementById("speed").value;
 			var newSpeed = new Array(); 
 			var startingPoint =new Array();
@@ -501,10 +823,18 @@ $(document).ready(function()
 			}
 		});
 
+		$('.restartAll').on('click' , function(){
+			graphTotal[0].pauseGraph();
+			for (var i =0 ; i< graphTotal.length ; i++) {
+				graphTotal[i].animate(positionArray[i] , axisAttributes[i].length, speed , 500 ,0);
+			}
+		});
+
 
 
 	});
 
+		organize();
 });
 
 
